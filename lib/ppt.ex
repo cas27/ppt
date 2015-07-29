@@ -12,7 +12,7 @@ defmodule Ppt do
   end
 
   def purchase do
-    oauth_token = get_token
+    {_, oauth_token} = get_token
     HTTPoison.request!(:post,
                       "https://api.sandbox.paypal.com/v1/payments/payment",
                       Jazz.encode!(%{
@@ -45,8 +45,13 @@ defmodule Ppt do
                       [{"Content-Type", "application/json"}, {"Authorization", "Bearer #{oauth_token}"}])
   end
 
-  defp token(%{body: body}) do
+  defp token(%{body: body, status_code: 200}) do
     data = Jazz.decode!(body)
-    data["access_token"]
+    {:ok, data["access_token"]}
+  end
+
+  defp token(%{body: body, status_code: 401}) do
+    data = Jazz.decode!(body)
+    {:error, data["error"]}
   end
 end

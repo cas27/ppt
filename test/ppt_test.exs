@@ -1,7 +1,15 @@
 defmodule PptTest do
   use ExUnit.Case
+  import Ppt
 
-  test "the truth" do
-    assert 1 + 1 == 2
+  test "token" do
+    {status, msg } = get_token
+    assert status == :ok
+  end
+
+  test "purchase" do
+    %{status_code: status_code} = purchase
+    IO.inspect status_code
+    assert status_code == 201
   end
 end
