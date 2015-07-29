@@ -15,11 +15,45 @@ defmodule Ppt do
                       [hackney: [basic_auth:
                                  {"AeosmXJ1nZWwJgErHHhzxpOS0fH7Ki6qu4LVEotJA3al_bsZcnnYsvc1dDAi_71JYIdwkxeFHDu4sdEy",
                                   "EDL8FGl7O6Xy-oIjdvcl4TRrx9EqKEkU_vKTi2qV3S95vfh1RB9gqiBJ6Uys-NuhSWCOn3FO84JFdpXy"}]])
-    |> respond
+    |> token
   end
 
-  defp respond({:ok, %HTTPoison.Response{body: body}}) do
+  def purchase do
+    oauth_token = get_token
+    HTTPoison.request(:post,
+                      "https://api.sandbox.paypal.com/v1/payments/payment",
+                      Jazz.encode!(%{
+                        intent: "sale",
+                        payer: %{
+                          payment_method: "credit_card",
+                          funding_instruments:
+                          [
+                            %{
+                              credit_card: %{
+                                number: "5500005555555559",
+                                type: "mastercard",
+                                expire_month: 12,
+                                expire_year: 2020,
+                                cvv2: 111
+                              }
+                             }
+                          ]
+                        },
+                        transactions: [
+                          %{
+                            amount: %{
+                              total: "19.99",
+                              currency: "USD"
+                            },
+                            description: "Test payment"
+                          }
+                        ]
+                      }),
+                      [{"Content-Type", "application/json"}, {"Authorization", "Bearer #{oauth_token}"}])
+  end
+
+  defp token({:ok, %HTTPoison.Response{body: body}}) do
     data = Jazz.decode!(body)
-    IO.puts data["access_token"]
+    data["access_token"]
   end
 end
