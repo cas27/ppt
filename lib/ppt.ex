@@ -1,14 +1,7 @@
 defmodule Ppt do
-  #defp http(method, path, params \\ [], opts \\ []) do
-    #credentials = Keyword.get(opts, :credentials)
-    #headers     = [{"Content-Type", "application/x-www-form-urlencoded"}]
-    #data        = params_to_string(params)
-
-    #HTTPoison.request(method, path, data, headers, [hackney: [basic_auth: credentials]])
-  #end
 
   def get_token do
-    HTTPoison.request(:post,
+    HTTPoison.request!(:post,
                       "https://api.sandbox.paypal.com/v1/oauth2/token",
                       "grant_type=client_credentials",
                       [{"Content-Type", "application/x-www-form-urlencoded"}],
@@ -20,7 +13,7 @@ defmodule Ppt do
 
   def purchase do
     oauth_token = get_token
-    HTTPoison.request(:post,
+    HTTPoison.request!(:post,
                       "https://api.sandbox.paypal.com/v1/payments/payment",
                       Jazz.encode!(%{
                         intent: "sale",
@@ -52,7 +45,7 @@ defmodule Ppt do
                       [{"Content-Type", "application/json"}, {"Authorization", "Bearer #{oauth_token}"}])
   end
 
-  defp token({:ok, %HTTPoison.Response{body: body}}) do
+  defp token(%{body: body}) do
     data = Jazz.decode!(body)
     data["access_token"]
   end
