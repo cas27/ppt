@@ -6,8 +6,8 @@ defmodule Ppt do
                       "grant_type=client_credentials",
                       [{"Content-Type", "application/x-www-form-urlencoded"}],
                       [hackney: [basic_auth:
-                                 {"AeosmXJ1nZWwJgErHHhzxpOS0fH7Ki6qu4LVEotJA3al_bsZcnnYsvc1dDAi_71JYIdwkxeFHDu4sdEy",
-                                  "EDL8FGl7O6Xy-oIjdvcl4TRrx9EqKEkU_vKTi2qV3S95vfh1RB9gqiBJ6Uys-NuhSWCOn3FO84JFdpXy"}]])
+                                 {Application.get_env(:ppt, :user),
+                                  Application.get_env(:ppt, :secret)}]])
     |> token
   end
 

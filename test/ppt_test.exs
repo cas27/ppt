@@ -9,7 +9,6 @@ defmodule PptTest do
 
   test "purchase" do
     %{status_code: status_code} = purchase
-    IO.inspect status_code
     assert status_code == 201
   end
 end
