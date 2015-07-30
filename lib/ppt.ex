@@ -11,7 +11,7 @@ defmodule Ppt do
     |> token
   end
 
-  def purchase do
+  def purchase(card, transaction) do
     {_, oauth_token} = get_token
     HTTPoison.request!(:post,
                       "https://api.sandbox.paypal.com/v1/payments/payment",
@@ -22,23 +22,17 @@ defmodule Ppt do
                           funding_instruments:
                           [
                             %{
-                              credit_card: %{
-                                number: "5500005555555559",
-                                type: "mastercard",
-                                expire_month: 12,
-                                expire_year: 2020,
-                                cvv2: 111
-                              }
-                             }
+                              credit_card: card
+                            }
                           ]
                         },
                         transactions: [
                           %{
                             amount: %{
-                              total: "19.99",
+                              total: transaction.total,
                               currency: Application.get_env(:ppt, :currency)
                             },
-                            description: "Test payment"
+                            description: transaction.description
                           }
                         ]
                       }),
