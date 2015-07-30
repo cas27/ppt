@@ -1,6 +1,6 @@
 use Mix.Config
 
 config :ppt,
-user: ""
-secret: ""
+user: "",
+secret: "",
 currency: ""

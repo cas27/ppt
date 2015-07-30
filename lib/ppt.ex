@@ -36,7 +36,7 @@ defmodule Ppt do
                           %{
                             amount: %{
                               total: "19.99",
-                              currency: "USD"
+                              currency: Application.get_env(:ppt, :currency)
                             },
                             description: "Test payment"
                           }
