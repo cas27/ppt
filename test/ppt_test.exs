@@ -3,7 +3,7 @@ defmodule PptTest do
   import Ppt
 
   test "token" do
-    {status, msg } = get_token
+    {status, _msg } = get_token
     assert status == :ok
   end
 
